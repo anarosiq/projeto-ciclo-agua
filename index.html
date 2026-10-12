@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ciclo da Água — Simulador Interativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <nav class="sidebar" aria-label="Navegação do ciclo da água">
+    <button class="side-btn logo" data-view="overview" data-tooltip="Visão geral" aria-label="Visão geral">
+      <svg viewBox="0 0 24 24"><path d="M12 2c3 4 6 7.5 6 11.5A6 6 0 0 1 6 13.5C6 9.5 9 6 12 2Z"/></svg>
+    </button>
+
+    <div class="side-group">
+      <button class="side-btn" data-view="stage" data-stage="evaporacao" data-tooltip="Evaporação" aria-label="Evaporação">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><g stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/></g></svg>
+      </button>
+      <button class="side-btn" data-view="stage" data-stage="condensacao" data-tooltip="Condensação" aria-label="Condensação">
+        <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 9.5a4.5 4.5 0 0 1-1 8.5H7Z"/></svg>
+      </button>
+      <button class="side-btn" data-view="stage" data-stage="precipitacao" data-tooltip="Precipitação" aria-label="Precipitação">
+        <svg viewBox="0 0 24 24"><path d="M7 15a4 4 0 0 1-.6-7.96A5.5 5.5 0 0 1 17 6.5a4.5 4.5 0 0 1-1 8.5H7Z"/><g stroke-linecap="round"><line x1="8" y1="18" x2="7" y2="21"/><line x1="12" y1="18" x2="11" y2="21"/><line x1="16" y1="18" x2="15" y2="21"/></g></svg>
+      </button>
+      <button class="side-btn" data-view="stage" data-stage="infiltracao" data-tooltip="Infiltração" aria-label="Infiltração">
+        <svg viewBox="0 0 24 24"><path d="M12 2s5 6 5 10a5 5 0 0 1-10 0c0-4 5-10 5-10Z"/><line x1="4" y1="20" x2="20" y2="20" stroke-linecap="round"/></svg>
+      </button>
+      <button class="side-btn" data-view="stage" data-stage="escoamento" data-tooltip="Escoamento" aria-label="Escoamento">
+        <svg viewBox="0 0 24 24"><path d="M3 9c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2" stroke-linecap="round"/><path d="M3 15c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="side-btn" data-view="stage" data-stage="acumulo" data-tooltip="Acúmulo" aria-label="Acúmulo">
+        <svg viewBox="0 0 24 24"><path d="M4 20 L9 8 L12 14 L15 6 L20 20 Z"/></svg>
+      </button>
+    </div>
+
+    <button class="side-btn weather-btn" data-view="weather" data-tooltip="Clima e Tempo" aria-label="Clima e Tempo">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M13 15a3.6 3.6 0 0 1-.5-7.16A4.6 4.6 0 0 1 21 9.6a3.6 3.6 0 0 1-1 6.9H13Z"/></svg>
+    </button>
+
+    <button class="side-btn help-btn" id="help-btn" aria-label="Ajuda" data-tooltip="Ajuda">?</button>
+  </nav>
+
+  <!-- ===== VISÃO GERAL / ETAPAS ===== -->
+  <main class="stage-view" id="stage-view">
+
+    <header class="stage-header">
+      <h1 id="app-title">Ciclo da Água <span class="drop">💧</span></h1>
+      <p id="app-subtitle">Explore o ciclo da água na natureza</p>
+    </header>
+
+    <div class="stage-wrap">
+      <div class="landscape-circle" id="landscape-circle">
+        <img src="assets/landscape.svg" alt="Ilustração da paisagem: oceano, montanhas, floresta e nuvens" id="landscape-image" />
+        <svg class="arrows-svg" id="arrows-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <div class="nodes-layer" id="nodes-layer"></div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="hint" id="hint-text">
+        <span class="drop-small">💧</span> Clique nos ícones para começar
+      </div>
+      <div class="sim-controls" id="sim-controls">
+        <button class="ctrl-btn" id="btn-play" aria-label="Iniciar ciclo">
+          <span class="ctrl-icon">▶</span><span class="ctrl-label">Iniciar ciclo</span>
+        </button>
+        <button class="ctrl-btn" id="btn-pause" aria-label="Pausar" hidden>
+          <span class="ctrl-icon">⏸</span><span class="ctrl-label">Pausar</span>
+        </button>
+        <button class="ctrl-btn ghost" id="btn-restart" aria-label="Reiniciar">
+          <span class="ctrl-icon">↻</span><span class="ctrl-label">Reiniciar</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== PAINEL DIREITO ===== -->
+  <aside class="right-panel" id="right-panel">
+    <div class="panel-card intro-card" id="intro-card">
+      <div class="panel-icon">
+        <svg viewBox="0 0 24 24"><path d="M8 13a4 4 0 1 0 8 0c0-2.5-4-8-4-8s-4 5.5-4 8Z"/></svg>
+      </div>
+      <div>
+        <h3>Interaja</h3>
+        <p>Clique nos ícones para ver cada etapa do ciclo.</p>
+      </div>
+    </div>
+
+    <div class="panel-card info-card" id="info-card">
+      <div class="info-icon" id="info-icon" aria-hidden="true"></div>
+      <h2 id="info-title">Ciclo da Água</h2>
+      <p id="info-desc">Explore as etapas do ciclo clicando nos elementos.</p>
+
+      <div class="stage-nav" id="stage-nav">
+        <button class="nav-arrow" id="prev-stage" aria-label="Etapa anterior">‹</button>
+        <span class="stage-counter" id="stage-counter">— / 6</span>
+        <button class="nav-arrow" id="next-stage" aria-label="Próxima etapa">›</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== CLIMA E TEMPO ===== -->
+  <section class="weather-view" id="weather-view" hidden>
+    <header class="stage-header">
+      <button class="back-btn" id="weather-back" aria-label="Voltar ao ciclo">‹ Voltar</button>
+      <h1>Clima e Tempo <span class="drop">☀️</span></h1>
+      <p>Condições meteorológicas atuais</p>
+    </header>
+
+    <div class="weather-body">
+      <div class="weather-search">
+        <input type="text" id="city-input" placeholder="Digite uma cidade..." aria-label="Cidade" />
+        <button id="city-search-btn">Buscar</button>
+      </div>
+
+      <div class="weather-main-card" id="weather-main-card">
+        <div class="weather-loading" id="weather-loading">Carregando dados do clima…</div>
+      </div>
+
+      <div class="weather-grid" id="weather-grid" hidden>
+        <div class="weather-tile">
+          <span class="tile-label">Umidade</span>
+          <span class="tile-value" id="tile-humidity">—</span>
+        </div>
+        <div class="weather-tile">
+          <span class="tile-label">Vento</span>
+          <span class="tile-value" id="tile-wind">—</span>
+        </div>
+        <div class="weather-tile">
+          <span class="tile-label">Chance de chuva</span>
+          <span class="tile-value" id="tile-rain">—</span>
+        </div>
+        <div class="weather-tile">
+          <span class="tile-label">Sensação</span>
+          <span class="tile-value" id="tile-feels">—</span>
+        </div>
+      </div>
+
+      <p class="demo-flag" id="demo-flag" hidden>Modo demonstrativo — configure WEATHER_API_KEY no backend para dados reais.</p>
+    </div>
+  </section>
+
+  <!-- tooltip flutuante da sidebar -->
+  <div class="tooltip" id="tooltip"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
